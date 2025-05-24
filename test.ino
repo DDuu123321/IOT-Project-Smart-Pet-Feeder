@@ -1,6 +1,6 @@
 #define BLYNK_TEMPLATE_ID "TMPL6goH2FXrE"
 #define BLYNK_TEMPLATE_NAME "IoT project"
-#define BLYNK_AUTH_TOKEN "UgfFYCO76hjf6G81R7Oj2jQYKQ8gsKii"
+#define BLYNK_AUTH_TOKEN "xxxxxxxxxxxxxxxxxxxxx"// ADD YOUR_BLYNK_AUTH_TOKEN_HERE
 #define BLYNK_DEVICE_NAME "PetFeeder"
 #define BLYNK_PRINT Serial  // Add this line to output Blynk debug information
 
@@ -15,10 +15,11 @@
 
 
 // WiFi credentials
-const char* ssid = "test";
-const char* password = "08080808";
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
 
-const char* botToken = "7709931140:AAGF7qKufIOGUpR2_lkGUPSDLnEyMp8WRQM";
+const char* botToken = "YOUR_TELEGRAM_BOT_TOKEN";
+
 
 
 // Use api.telegram.org with port 443
@@ -26,7 +27,7 @@ WiFiClientSecure secured_client;
 UniversalTelegramBot bot(botToken, secured_client);
 
 // ID of your chat or user (you can set this after first message if unknown)
-String chat_id = "7187057631"; 
+String chat_id = "YOUR_TELEGRAM_CHAT_ID";
 
 // Time to check Telegram messages (in ms)
 unsigned long lastTime = 0;

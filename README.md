@@ -34,7 +34,7 @@ Pin 5    |  Servo Motor (Signal)
 Pin 4    |  HX711 (DOUT)
 Pin 7    |  HX711 (SCK)
 Pin 2    |  LED Indicator
-VCC      |  3.3V/5V (depending on components)
+VCC      |  VCC load cell 3.3V and VCC servo 5V
 GND      |  Ground
 ```
 

@@ -87,11 +87,11 @@ int numScheduledFeedings = 0;           // Current number of active scheduled fe
 
 // ========================== SERVO CONTROL CONFIGURATION ==========================
 // Servo positions for food dispensing mechanism
-int servoPositions[] = {0, 90, 180, 270};  // Four preset positions for rotation
+int servoPositions[] = {0, 90, 0, 90};  // Four preset positions for rotation
 int currentPositionIndex = 0;               // Current position index tracker
 
 // ========================== FOOD CONTAINER MANAGEMENT ==========================
-float containerCapacity = 1000.0;       // Total food container capacity in grams
+float containerCapacity = 500.0;       // Total food container capacity in grams
 float containerInitialWeight = 0.0;     // Empty container baseline weight
 float totalFedAmount = 0.0;             // Total amount of food dispensed since last refill
 

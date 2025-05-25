@@ -34,11 +34,11 @@
 
 // ========================== BLYNK CONFIGURATION ==========================
 // WARNING: Replace these with your actual credentials before uploading
-#define BLYNK_TEMPLATE_ID "YOUR_BLYNK_TEMPLATE_ID_HERE"
-#define BLYNK_TEMPLATE_NAME "Smart Pet Feeder"
-#define BLYNK_AUTH_TOKEN "YOUR_BLYNK_AUTH_TOKEN_HERE"
+#define BLYNK_TEMPLATE_ID "TMPL6goH2FXrE"
+#define BLYNK_TEMPLATE_NAME "IoT project"
+#define BLYNK_AUTH_TOKEN "UgfFYCO76hjf6G81R7Oj2jQYKQ8gsKii"
 #define BLYNK_DEVICE_NAME "PetFeeder"
-#define BLYNK_PRINT Serial  // Enable Blynk debug information output
+#define BLYNK_PRINT Serial   // Enable Blynk debug information output
 
 // ========================== LIBRARY INCLUDES ==========================
 #include <WiFi.h>                    // ESP32 WiFi connectivity
@@ -53,12 +53,13 @@
 
 // ========================== NETWORK CREDENTIALS ==========================
 // WARNING: Replace with your actual WiFi credentials
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
+const char* ssid = "ZTE-EE7dG3";
+const char* password = "du123456";
 
 // WARNING: Replace with your actual Telegram bot token and chat ID
-const char* botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-String chat_id = "YOUR_TELEGRAM_CHAT_ID"; 
+const char* botToken = "7709931140:AAGF7qKufIOGUpR2_lkGUPSDLnEyMp8WRQM";
+// ID of your chat or user (you can set this after first message if unknown)
+String chat_id = "7187057631"; 
 
 // ========================== HARDWARE PIN DEFINITIONS ==========================
 const int SERVO_PIN = 5;        // Servo motor signal pin
@@ -86,11 +87,11 @@ int numScheduledFeedings = 0;           // Current number of active scheduled fe
 
 // ========================== SERVO CONTROL CONFIGURATION ==========================
 // Servo positions for food dispensing mechanism
-int servoPositions[] = {0, 90, 0, 90};  // Four preset positions for rotation
+int servoPositions[] = {0, 90, 180, 270};  // Four preset positions for rotation
 int currentPositionIndex = 0;               // Current position index tracker
 
 // ========================== FOOD CONTAINER MANAGEMENT ==========================
-float containerCapacity = 500.0;       // Total food container capacity in grams
+float containerCapacity = 1000.0;       // Total food container capacity in grams
 float containerInitialWeight = 0.0;     // Empty container baseline weight
 float totalFedAmount = 0.0;             // Total amount of food dispensed since last refill
 
@@ -236,7 +237,7 @@ void handleTelegramMessages() {
       }
       else if (text == "status") {
         // Send current system status
-        String statusReport = "🐾 Pet Feeder Status:\n";
+        String statusReport = "Pet Feeder Status:\n";
         statusReport += "Weight: " + String(currentWeight, 1) + "g\n";
         statusReport += "Food remaining: " + String((int)((containerCapacity - totalFedAmount) / containerCapacity * 100)) + "%\n";
         statusReport += "Today's feeds: " + String(feedCount) + " times\n";
@@ -264,14 +265,14 @@ void setup() {
   // Initialize LED indicator
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
-  Serial.println("✓ LED initialized");
+  Serial.println("LED initialized");
   
   // Initialize servo motor
   Serial.print("Initializing servo motor...");
   gateServo.attach(SERVO_PIN);
   gateServo.write(servoPositions[currentPositionIndex]);  // Set to initial position (0°)
   delay(500);  // Allow servo to reach position
-  Serial.println("✓ Done");
+  Serial.println("Done");
   
   // Initialize weight sensor
   Serial.print("Initializing weight sensor...");
@@ -279,7 +280,7 @@ void setup() {
   scale.set_scale(calibration_factor);
   scale.tare();                // Zero out the scale
   containerInitialWeight = 0;  // Set baseline container weight
-  Serial.println("✓ Done");
+  Serial.println("Done");
   
   // ========================== NETWORK CONNECTION ==========================
   // Connect to WiFi network
@@ -293,11 +294,11 @@ void setup() {
   }
   
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n✓ WiFi Connected!");
+    Serial.println("\nWiFi Connected!");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   } else {
-    Serial.println("\n✗ WiFi Connection FAILED!");
+    Serial.println("\nWiFi Connection FAILED!");
     Serial.println("Will retry connection in main loop...");
   }
   
@@ -308,21 +309,21 @@ void setup() {
   bool blynkConnected = Blynk.connect(10000);  // 10 second connection timeout
   
   if (blynkConnected) {
-    Serial.println("✓ Connected!");
+    Serial.println("Connected!");
   } else {
-    Serial.println("✗ Connection FAILED! Will retry in loop...");
+    Serial.println("Connection FAILED! Will retry in loop...");
   }
   
   // ========================== TELEGRAM BOT INITIALIZATION ==========================
   // Configure secure client for Telegram API
   secured_client.setInsecure();  // Use insecure mode for simplicity
-  Serial.println("✓ Telegram bot initialized");
+  Serial.println("Telegram bot initialized");
   
   // ========================== TIME SYNCHRONIZATION ==========================
   // Initialize real-time clock widget
   rtc.begin();
   setSyncInterval(10 * 60);  // Sync time every 10 minutes
-  Serial.println("✓ RTC synchronized");
+  Serial.println("RTC synchronized");
   
   // ========================== INITIAL DATA SETUP ==========================
   // Record initial weight reading
@@ -360,7 +361,7 @@ void setup() {
     
     // Synchronize all widget states
     Blynk.syncAll();
-    Serial.println("✓ Initial dashboard data sent");
+    Serial.println("Initial dashboard data sent");
   }
   
   // ========================== STARTUP COMPLETION ==========================
@@ -392,7 +393,7 @@ void loop() {
     if (WiFi.status() == WL_CONNECTED) {
       bool reconnected = Blynk.connect(5000);  // 5 second timeout
       if (reconnected) {
-        Serial.println("✓ Reconnected to Blynk successfully!");
+        Serial.println("Reconnected to Blynk successfully!");
         wasConnected = true;
         updateAllCharts();  // Refresh all chart data after reconnection
       }
@@ -509,7 +510,7 @@ void updateFoodRemaining() {
   // Low food warning system
   static bool lowFoodWarningTriggered = false;
   if (percentRemaining < 20 && !lowFoodWarningTriggered) {
-    String warningMsg = "⚠️ LOW FOOD WARNING: Only " + String(percentRemaining) + "% remaining!";
+    String warningMsg = "LOW FOOD WARNING: Only " + String(percentRemaining) + "% remaining!";
     sendStatusMsg(warningMsg);
     // Send Telegram notification if available
     if (WiFi.status() == WL_CONNECTED && chat_id != "") {
@@ -569,7 +570,7 @@ void updateFeedHistory(float amount) {
     
     Serial.println("Feeding data sent - Amount: " + String(amount) + "g, Daily total: " + String(dailyFeedTotal) + "g");
   } else {
-    Serial.println("⚠️ Blynk not connected - feeding data not recorded to charts");
+    Serial.println("Blynk not connected - feeding data not recorded to charts");
   }
   
   // Update food remaining display
@@ -577,7 +578,7 @@ void updateFeedHistory(float amount) {
   
   // Send Telegram notification
   if (WiFi.status() == WL_CONNECTED && chat_id != "") {
-    String feedMsg = "🍽️ Fed " + String(amount, 1) + "g. Today's total: " + String(dailyFeedTotal, 1) + "g";
+    String feedMsg = "Fed " + String(amount, 1) + "g. Today's total: " + String(dailyFeedTotal, 1) + "g";
     bot.sendMessage(chat_id, feedMsg, "");
   }
 }
@@ -599,7 +600,7 @@ void feedPet(float amount) {
   feedingInProgress = true;
   userCancelledFeeding = false;
   Serial.println("=== Starting Feeding Sequence ===");
-  sendStatusMsg("🍽️ Starting feeding sequence...");
+  sendStatusMsg("Starting feeding sequence...");
   
   // Record initial weight
   float initialWeight = scale.get_units(10);
@@ -610,8 +611,8 @@ void feedPet(float amount) {
   
   // ========================== PRE-FEEDING CHECK ==========================
   if (initialWeight >= amount * 0.9) {
-    Serial.println("✅ Bowl already contains sufficient food!");
-    String statusMsg = "✅ Target already achieved: " + String(initialWeight, 1) + "g >= " + String(amount, 1) + "g";
+    Serial.println("Bowl already contains sufficient food!");
+    String statusMsg = "Target already achieved: " + String(initialWeight, 1) + "g >= " + String(amount, 1) + "g";
     sendStatusMsg(statusMsg);
     
     blinkLED(2, 100);
@@ -646,22 +647,22 @@ void feedPet(float amount) {
   
   // Record current position (don't assume starting position)
   int currentAngle = servoPositions[currentPositionIndex];
-  Serial.println("Starting from position: " + String(currentAngle) + "°");
+  Serial.println("Starting from position: " + String(currentAngle) + " degrees");
   
   // Main feeding loop - each 90° rotation dispenses food
   while (millis() - startTime < 15000) {  // 15-second safety timeout
     
     // Check for user cancellation
     if (userCancelledFeeding) {
-      Serial.println("❌ Feeding cancelled by user");
-      sendStatusMsg("❌ Feeding cancelled by user");
+      Serial.println("Feeding cancelled by user");
+      sendStatusMsg("Feeding cancelled by user");
       break;
     }
     
     // Check isOpen flag
     if (!isOpen && rotationCount > 0) {
-      Serial.println("❌ Feeding stopped - gate closed");
-      sendStatusMsg("❌ Feeding stopped - gate closed");
+      Serial.println("Feeding stopped - gate closed");
+      sendStatusMsg("Feeding stopped - gate closed");
       break;
     }
     
@@ -670,14 +671,14 @@ void feedPet(float amount) {
     currentPositionIndex = (currentPositionIndex + 1) % 4;  // Cycle through 0,1,2,3
     int nextPosition = servoPositions[currentPositionIndex];
     
-    Serial.println("🔄 Rotation " + String(rotationCount + 1) + ": " + 
-                   String(currentAngle) + "° → " + String(nextPosition) + "°");
+    Serial.println("Rotation " + String(rotationCount + 1) + ": " + 
+                   String(currentAngle) + " -> " + String(nextPosition) + " degrees");
     
     gateServo.write(nextPosition);
     rotationCount++;
     currentAngle = nextPosition;
     
-    sendStatusMsg("🔄 Rotation " + String(rotationCount) + ": " + String(nextPosition) + "° (Food dispensing...)");
+    sendStatusMsg("Rotation " + String(rotationCount) + ": " + String(nextPosition) + " degrees (Food dispensing...)");
     
     // ========================== WAIT FOR FOOD TO DISPENSE ==========================
     // Give time for food to fall and weight to stabilize
@@ -696,29 +697,29 @@ void feedPet(float amount) {
     // ========================== TARGET CHECK ==========================
     // Check if total bowl weight has reached target
     if (currentBowlWeight >= amount * 0.9) {
-      Serial.println("✅ Target total weight reached after " + String(rotationCount) + " rotations!");
-      sendStatusMsg("✅ Target achieved: " + String(currentBowlWeight, 1) + "g >= " + String(amount, 1) + "g");
+      Serial.println("Target total weight reached after " + String(rotationCount) + " rotations!");
+      sendStatusMsg("Target achieved: " + String(currentBowlWeight, 1) + "g >= " + String(amount, 1) + "g");
       break;
     }
     
     // Alternative check: sufficient food dispensed
     if (totalDispensedAmount >= neededAmount * 0.9) {
-      Serial.println("✅ Sufficient food dispensed after " + String(rotationCount) + " rotations!");
-      sendStatusMsg("✅ Dispensed enough: " + String(totalDispensedAmount, 1) + "g");
+      Serial.println("Sufficient food dispensed after " + String(rotationCount) + " rotations!");
+      sendStatusMsg("Dispensed enough: " + String(totalDispensedAmount, 1) + "g");
       break;
     }
     
     // Progress update
     float progressPercent = (currentBowlWeight / amount) * 100;
     if (progressPercent > 100) progressPercent = 100;
-    sendStatusMsg("📊 Progress: " + String(progressPercent, 1) + "% (" + 
+    sendStatusMsg("Progress: " + String(progressPercent, 1) + "% (" + 
                   String(currentBowlWeight, 1) + "g/" + String(amount, 1) + "g)");
     
     // Safety check - prevent excessive rotations
     if (rotationCount >= 12) {  // Increased limit since each rotation is smaller
       timeoutOccurred = true;
-      sendStatusMsg("⚠️ WARNING: Maximum rotations reached (" + String(rotationCount) + ")");
-      Serial.println("⚠️ Maximum rotations reached - stopping for safety");
+      sendStatusMsg("WARNING: Maximum rotations reached (" + String(rotationCount) + ")");
+      Serial.println("Maximum rotations reached - stopping for safety");
       break;
     }
   }
@@ -726,8 +727,8 @@ void feedPet(float amount) {
   // ========================== FEEDING COMPLETION ==========================
   if (millis() - startTime >= 15000) {
     timeoutOccurred = true;
-    sendStatusMsg("⚠️ WARNING: Feeding timeout occurred!");
-    Serial.println("⚠️ Feeding timeout - 15 seconds elapsed");
+    sendStatusMsg("WARNING: Feeding timeout occurred!");
+    Serial.println("Feeding timeout - 15 seconds elapsed");
   }
   
   // Turn off LED
@@ -744,21 +745,21 @@ void feedPet(float amount) {
   bool targetAchieved = (finalWeight >= amount * 0.9);
   
   if (userCancelledFeeding) {
-    statusMsg = "❌ Cancelled after " + String(rotationCount) + " rotations: " + 
+    statusMsg = "Cancelled after " + String(rotationCount) + " rotations: " + 
                 String(finalWeight, 1) + "g total (" + String(actualDispensedAmount, 1) + "g added)";
   } else if (timeoutOccurred) {
     if (targetAchieved) {
-      statusMsg = "⚠️ Timeout but target reached: " + String(finalWeight, 1) + "g/" + String(amount, 1) + "g";
+      statusMsg = "Timeout but target reached: " + String(finalWeight, 1) + "g/" + String(amount, 1) + "g";
     } else {
-      statusMsg = "⚠️ Incomplete after " + String(rotationCount) + " rotations: " + 
+      statusMsg = "Incomplete after " + String(rotationCount) + " rotations: " + 
                   String(finalWeight, 1) + "g/" + String(amount, 1) + "g";
     }
   } else {
     if (targetAchieved) {
-      statusMsg = "✅ Success in " + String(rotationCount) + " rotations: " + 
+      statusMsg = "Success in " + String(rotationCount) + " rotations: " + 
                   String(finalWeight, 1) + "g achieved (+" + String(actualDispensedAmount, 1) + "g)";
     } else {
-      statusMsg = "⚠️ Under-target after " + String(rotationCount) + " rotations: " + 
+      statusMsg = "Under-target after " + String(rotationCount) + " rotations: " + 
                   String(finalWeight, 1) + "g/" + String(amount, 1) + "g";
     }
   }
@@ -767,7 +768,7 @@ void feedPet(float amount) {
   
   Serial.println("=== Feeding Complete ===");
   Serial.println("Total rotations: " + String(rotationCount));
-  Serial.println("Final position: " + String(servoPositions[currentPositionIndex]) + "°");
+  Serial.println("Final position: " + String(servoPositions[currentPositionIndex]) + " degrees");
   Serial.print("Final bowl weight: ");
   Serial.print(finalWeight, 1);
   Serial.print("g (target: ");
@@ -816,12 +817,12 @@ void checkScheduledFeedings() {
     
     // Trigger feeding if time matches and hasn't fed this minute
     if (currentTimeInMinutes == scheduledTime && lastFedTime != currentTimeInMinutes) {
-      Serial.println("⏰ Scheduled feeding time reached!");
-      sendStatusMsg("⏰ Automatic feeding triggered");
+      Serial.println("Scheduled feeding time reached!");
+      sendStatusMsg("Automatic feeding triggered");
       
       // Send Telegram notification
       if (WiFi.status() == WL_CONNECTED && chat_id != "") {
-        bot.sendMessage(chat_id, "⏰ Scheduled feeding started", "");
+        bot.sendMessage(chat_id, "Scheduled feeding started", "");
       }
       
       isOpen = true;  // Enable feeding
@@ -860,11 +861,11 @@ BLYNK_WRITE(V1) {
   if (buttonState == 1) {
     // Button pressed ON - start feeding if not already in progress
     if (!feedingInProgress) {
-      sendStatusMsg("📱 Manual feeding triggered from app");
+      sendStatusMsg("Manual feeding triggered from app");
       isOpen = true;
       feedPet(targetFeedAmount);
     } else {
-      sendStatusMsg("ℹ️ Feeding already in progress");
+      sendStatusMsg("Feeding already in progress");
     }
   } 
   else if (buttonState == 0) {
@@ -872,7 +873,7 @@ BLYNK_WRITE(V1) {
     if (feedingInProgress) {
       userCancelledFeeding = true;
       isOpen = false;
-      sendStatusMsg("📱 Feeding cancellation requested");
+      sendStatusMsg("Feeding cancellation requested");
       Serial.println("User requested feeding cancellation via app");
     }
   }
@@ -893,7 +894,7 @@ BLYNK_WRITE(V3) {
   Serial.print(targetFeedAmount);
   Serial.println("g");
   
-  String statusMsg = "⚖️ Feed amount set: " + String(targetFeedAmount) + "g";
+  String statusMsg = "Feed amount set: " + String(targetFeedAmount) + "g";
   sendStatusMsg(statusMsg);
 }
 
@@ -905,13 +906,13 @@ BLYNK_WRITE(V5) {
   if (param.asInt() == 1) {
     // Perform scale tare operation
     Serial.println("Starting weight sensor calibration...");
-    sendStatusMsg("⚙️ Calibrating weight sensor...");
+    sendStatusMsg("Calibrating weight sensor...");
     
     scale.tare();  // Zero out the scale
     containerInitialWeight = 0;  // Reset container baseline
     
-    Serial.println("✅ Weight sensor calibrated successfully");
-    sendStatusMsg("✅ Weight sensor calibrated");
+    Serial.println("Weight sensor calibrated successfully");
+    sendStatusMsg("Weight sensor calibrated");
     
     // Visual feedback
     blinkLED(3, 100);
@@ -950,16 +951,16 @@ BLYNK_WRITE(V6) {
     char timeBuffer[10];
     sprintf(timeBuffer, "%02d:%02d", feedHour, feedMinute);
     
-    String statusMsg = "⏰ Schedule set: " + String(timeBuffer);
+    String statusMsg = "Schedule set: " + String(timeBuffer);
     sendStatusMsg(statusMsg);
     Serial.println("Scheduled feeding time set: " + String(timeBuffer));
     
     // Send Telegram confirmation
     if (WiFi.status() == WL_CONNECTED && chat_id != "") {
-      bot.sendMessage(chat_id, "⏰ Feeding scheduled for " + String(timeBuffer), "");
+      bot.sendMessage(chat_id, "Feeding scheduled for " + String(timeBuffer), "");
     }
   } else {
-    sendStatusMsg("⏰ No feeding schedule active");
+    sendStatusMsg("No feeding schedule active");
     Serial.println("Feeding schedule cleared");
   }
 }
@@ -971,7 +972,7 @@ BLYNK_WRITE(V6) {
 BLYNK_WRITE(V12) {
   if (param.asInt() == 1) {
     Serial.println("Clearing feeding history and statistics...");
-    sendStatusMsg("🗑️ Clearing feeding history...");
+    sendStatusMsg("Clearing feeding history...");
     
     // Clear feeding history arrays
     for (int i = 0; i < MAX_FEED_HISTORY; i++) {
@@ -998,8 +999,8 @@ BLYNK_WRITE(V12) {
     // Visual feedback
     blinkLED(3, 100);
     
-    sendStatusMsg("✅ History and statistics cleared");
-    Serial.println("✅ All feeding data cleared successfully");
+    sendStatusMsg("History and statistics cleared");
+    Serial.println("All feeding data cleared successfully");
   }
 }
 
@@ -1010,7 +1011,7 @@ BLYNK_WRITE(V12) {
 BLYNK_WRITE(V13) {
   if (param.asInt() == 1) {
     Serial.println("Resetting food container to full...");
-    sendStatusMsg("📦 Resetting food container...");
+    sendStatusMsg("Resetting food container...");
     
     // Reset total fed amount (marks container as full)
     totalFedAmount = 0.0;
@@ -1021,12 +1022,12 @@ BLYNK_WRITE(V13) {
     // Visual feedback
     blinkLED(3, 100);
     
-    sendStatusMsg("✅ Food container marked as refilled");
-    Serial.println("✅ Food container reset to full capacity");
+    sendStatusMsg("Food container marked as refilled");
+    Serial.println("Food container reset to full capacity");
     
     // Send Telegram notification
     if (WiFi.status() == WL_CONNECTED && chat_id != "") {
-      bot.sendMessage(chat_id, "📦 Food container refilled and reset", "");
+      bot.sendMessage(chat_id, "Food container refilled and reset", "");
     }
   }
 }
@@ -1037,8 +1038,8 @@ BLYNK_WRITE(V13) {
  * Synchronizes all widget states and refreshes data
  */
 BLYNK_CONNECTED() {
-  Serial.println("✅ Successfully connected to Blynk server!");
-  sendStatusMsg("🌐 Connected to Blynk server");
+  Serial.println("Successfully connected to Blynk server!");
+  sendStatusMsg("Connected to Blynk server");
   
   // Initialize real-time clock
   rtc.begin();
@@ -1049,7 +1050,7 @@ BLYNK_CONNECTED() {
   // Synchronize all widget states with current values
   Blynk.syncAll();
   
-  Serial.println("📊 All dashboard widgets synchronized");
+  Serial.println("All dashboard widgets synchronized");
 }
 
 // ========================== END OF CODE ==========================

@@ -36,7 +36,7 @@
 // WARNING: Replace these with your actual credentials before uploading
 #define BLYNK_TEMPLATE_ID "TMPL6goH2FXrE"
 #define BLYNK_TEMPLATE_NAME "IoT project"
-#define BLYNK_AUTH_TOKEN "UgfFYCO76hjf6G81R7Oj2jQYKQ8gsKii"
+#define BLYNK_AUTH_TOKEN "YOUR_BLYNK_AUTH_TOKEN_HERE"
 #define BLYNK_DEVICE_NAME "PetFeeder"
 #define BLYNK_PRINT Serial   // Enable Blynk debug information output
 
@@ -53,13 +53,13 @@
 
 // ========================== NETWORK CREDENTIALS ==========================
 // WARNING: Replace with your actual WiFi credentials
-const char* ssid = "ZTE-EE7dG3";
-const char* password = "du123456";
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
 
 // WARNING: Replace with your actual Telegram bot token and chat ID
-const char* botToken = "7709931140:AAGF7qKufIOGUpR2_lkGUPSDLnEyMp8WRQM";
+const char* botToken = "YOUR_TELEGRAM_BOT_TOKEN";
 // ID of your chat or user (you can set this after first message if unknown)
-String chat_id = "7187057631"; 
+String chat_id = "YOUR_TELEGRAM_CHAT_ID";
 
 // ========================== HARDWARE PIN DEFINITIONS ==========================
 const int SERVO_PIN = 5;        // Servo motor signal pin
